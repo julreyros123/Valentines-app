@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function QuestionPage() {
   const router = useRouter();
   const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
-  const [hoverCount, setHoverCount] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -14,7 +14,7 @@ export default function QuestionPage() {
     setMounted(true);
   }, []);
 
-  const handleNoHover = () => {
+  const moveButton = () => {
     if (!containerRef.current) return;
     
     const container = containerRef.current;
@@ -22,7 +22,6 @@ export default function QuestionPage() {
     const buttonWidth = 100;
     const buttonHeight = 50;
     
-    // Calculate random position within container bounds
     const maxX = rect.width - buttonWidth - 40;
     const maxY = rect.height - buttonHeight - 40;
     
@@ -30,29 +29,28 @@ export default function QuestionPage() {
     const newY = Math.random() * maxY - maxY / 2;
     
     setNoPosition({ x: newX, y: newY });
-    setHoverCount((prev) => prev + 1);
+  };
+
+  const handleNoClick = () => {
+    if (clickCount < 3) {
+      moveButton();
+      setClickCount((prev) => prev + 1);
+    } else {
+      // 4th click - show "just click yes" but don't move
+      setClickCount((prev) => prev + 1);
+    }
   };
 
   const handleYesClick = () => {
     router.push("/yes");
   };
 
-  const getNoButtonText = () => {
-    const texts = [
-      "No",
-      "Are you sure?",
-      "Really?",
-      "Think again!",
-      "Pretty please?",
-      "Don't be shy!",
-      "Last chance!",
-      "Pretty please?",
-      "You know you want to!",
-      "I'm waiting...",
-      "Say yes!",
-      "Please?",
-    ];
-    return texts[Math.min(hoverCount, texts.length - 1)];
+  const getMessage = () => {
+    if (clickCount === 0) return null;
+    if (clickCount === 1) return "Nice try! 😏";
+    if (clickCount === 2) return "Too slow! ⚡";
+    if (clickCount === 3) return "Catch me if you can! 🏃‍♂️";
+    return "Just click YES! 💝";
   };
 
   const hearts = ["💕", "💖", "💗", "💓", "💝", "❤️", "🧡", "💛"];
@@ -98,7 +96,7 @@ export default function QuestionPage() {
 
           {/* Description */}
           <p className="text-gray-600 mb-8 text-lg">
-            I couldn't imagine spending this special day with anyone else but you...
+            Hey Fionah, I couldn't imagine spending this special day with anyone else but you...
           </p>
 
           {/* Buttons Container */}
@@ -111,28 +109,27 @@ export default function QuestionPage() {
               YES! 💕
             </button>
 
-            {/* No Button - Moves on hover */}
+            {/* No Button - Moves on click, 3 times max */}
             <button
-              onMouseEnter={handleNoHover}
-              onClick={handleNoHover}
+              onClick={handleNoClick}
               style={{
                 transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
-                transition: hoverCount > 0 ? "transform 0.3s ease-out" : "none",
+                transition: clickCount > 0 && clickCount < 4 ? "transform 0.3s ease-out" : "none",
               }}
-              className="px-8 py-3 bg-gray-200 text-gray-600 font-semibold text-lg rounded-full shadow-md hover:bg-gray-300 cursor-pointer select-none"
+              className={`px-8 py-3 font-semibold text-lg rounded-full shadow-md cursor-pointer select-none ${
+                clickCount >= 4 
+                  ? "bg-rose-100 text-rose-500 animate-pulse" 
+                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+              }`}
             >
-              {getNoButtonText()} 😢
+              {clickCount >= 4 ? "Just click YES! 💝" : "No 😢"}
             </button>
           </div>
 
           {/* Fun Messages */}
-          {hoverCount > 0 && (
+          {clickCount > 0 && (
             <p className="mt-6 text-rose-500 font-medium animate-pulse">
-              {hoverCount === 1 && "Hey! That button is slippery! 🏃‍♂️"}
-              {hoverCount === 2 && "Catch me if you can! 😏"}
-              {hoverCount === 3 && "I'm too fast for you! ⚡"}
-              {hoverCount === 4 && "Just click YES already! 💝"}
-              {hoverCount >= 5 && "The YES button is waiting for you... 😉"}
+              {getMessage()}
             </p>
           )}
         </div>

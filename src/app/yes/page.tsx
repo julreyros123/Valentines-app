@@ -14,6 +14,7 @@ export default function YesPage() {
   const [mounted, setMounted] = useState(false);
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const [showMessage, setShowMessage] = useState(0);
+  const [gifLoaded, setGifLoaded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -80,25 +81,45 @@ export default function YesPage() {
         {/* Success Card */}
         <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 md:p-16 border-4 border-rose-300">
           {/* Big Heart */}
-          <div className="mb-8">
+          <div className="mb-6">
             <span className="text-8xl md:text-9xl heart-beat inline-block drop-shadow-lg">💖</span>
           </div>
 
-          {/* Success Messages */}
+          {/* YEY Message */}
           {showMessage >= 1 && (
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-6 bounce-in">
-              YES!!! 🎉
+            <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-6 bounce-in">
+              YEY!!! 🎉
             </h1>
           )}
 
+          {/* Cute GIF */}
           {showMessage >= 2 && (
-            <p className="text-2xl md:text-3xl text-gray-700 mb-4 font-semibold bounce-in" style={{ animationDelay: "0.2s" }}>
-              You just made me the happiest person! 💕
-            </p>
+            <div className="my-6 bounce-in" style={{ animationDelay: "0.2s" }}>
+              <div className="relative w-full max-w-md mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg bg-rose-100 flex items-center justify-center">
+                {!gifLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-4xl">💝</span>
+                  </div>
+                )}
+                <iframe
+                  src="https://giphy.com/embed/l4pTfx2Q9EoiVNMsE"
+                  width="100%"
+                  height="100%"
+                  className={`absolute inset-0 ${gifLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  frameBorder="0"
+                  allowFullScreen
+                  onLoad={() => setGifLoaded(true)}
+                />
+              </div>
+              <p className="text-rose-500 font-medium mt-2">So cute! 💕</p>
+            </div>
           )}
 
           {showMessage >= 3 && (
             <div className="space-y-4 bounce-in" style={{ animationDelay: "0.4s" }}>
+              <p className="text-2xl md:text-3xl text-gray-700 font-semibold">
+                Fionah, you just made me the happiest person! 💕
+              </p>
               <p className="text-xl text-gray-600">
                 This Valentine's Day is going to be absolutely perfect! 
               </p>
@@ -108,26 +129,6 @@ export default function YesPage() {
               <p className="text-lg text-rose-600 font-medium">
                 I can't wait to spend this special day with you! 
               </p>
-              <div className="pt-6">
-                <p className="text-gray-500 text-sm mb-2">Share the love:</p>
-                <button 
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: 'My Valentine Said YES! 💖',
-                        text: 'Someone just accepted my Valentine invitation! 💕',
-                        url: window.location.href,
-                      });
-                    } else {
-                      navigator.clipboard.writeText(window.location.href);
-                      alert('Link copied to clipboard! 💌');
-                    }
-                  }}
-                  className="px-6 py-3 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all"
-                >
-                  📤 Share This Moment
-                </button>
-              </div>
             </div>
           )}
         </div>
