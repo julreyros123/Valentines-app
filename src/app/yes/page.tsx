@@ -14,7 +14,6 @@ export default function YesPage() {
   const [mounted, setMounted] = useState(false);
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const [showMessage, setShowMessage] = useState(0);
-  const [gifLoaded, setGifLoaded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -95,20 +94,11 @@ export default function YesPage() {
           {/* Cute GIF */}
           {showMessage >= 2 && (
             <div className="my-6 bounce-in" style={{ animationDelay: "0.2s" }}>
-              <div className="relative w-full max-w-md mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg bg-rose-100 flex items-center justify-center">
-                {!gifLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl">💝</span>
-                  </div>
-                )}
-                <iframe
-                  src="https://giphy.com/embed/l4pTfx2Q9EoiVNMsE"
-                  width="100%"
-                  height="100%"
-                  className={`absolute inset-0 ${gifLoaded ? 'opacity-100' : 'opacity-0'}`}
-                  frameBorder="0"
-                  allowFullScreen
-                  onLoad={() => setGifLoaded(true)}
+              <div className="relative w-full max-w-xs mx-auto rounded-2xl overflow-hidden shadow-lg">
+                <img
+                  src="/2f99bf9ccc11d217b1c97dd0592c8c93f411d2b8-521x640.gif"
+                  alt="Jett cute gif"
+                  className="w-full h-auto"
                 />
               </div>
               <p className="text-rose-500 font-medium mt-2">So cute! 💕</p>
